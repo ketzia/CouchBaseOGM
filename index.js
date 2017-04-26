@@ -1,8 +1,8 @@
-import { NativeModules } from 'react-native';
-const { RNCouchbaseOgm } = NativeModules;
+import {NativeModules} from "react-native";
+let Couchbase = NativeModules.RNCouchbaseOgm;
 
-RNCouchbaseOgm.prototype.init = function(){
-    console.log("Oye khi onda");
+Couchbase.init = function () {
+    console.log("khe");
 };
 
-export default RNCouchbaseOgm;
+module.exports = Couchbase;
