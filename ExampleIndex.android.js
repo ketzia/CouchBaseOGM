@@ -15,7 +15,7 @@ import {
 
 
 import Couchbase from "couchbase-ogm";
-Couchbase.init();
+Couchbase.createDB("test");
 
 
 export default class TestProjectArquitectura extends Component {
