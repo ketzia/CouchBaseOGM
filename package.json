@@ -6,11 +6,9 @@
   "repository": "https://github.com/ketzia/CouchBaseOGM.git",
   "author": "ErnestoPM <ernestopm20@gmail.com>",
   "license": "MIT",
-  "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
-  },
   "dependencies": {
-    "react-native-couchbase-lite": "latest"
+    "react-native-couchbase-lite": "latest",
+    "bluebird": "latest",
+    "asyncawait": "latest"
   }
 }

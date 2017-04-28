@@ -3,6 +3,48 @@ import CouchbaseClient from "react-native-couchbase-lite";
 let CouchbaseOGM = NativeModules.RNCouchbaseOgm;
 
 /**
+ * Initializes the manager using the initRestClient function and saves a reference to the databaseManager.
+ *
+ */
+
+function init(){
+    return new Promise((resolve,reject) => {
+        CouchbaseClient.initRESTClient(manager => {
+            if(manager == null){
+                reject();
+                return;
+            }else{
+                resolve(manager);
+            }
+
+        })
+    });
+}
+
+
+async function init2(){
+    var manager = await init();
+    console.log(manager);
+}
+
+CouchbaseOGM.testFunction = function (manager) {
+    init().then(
+        function success(manager){
+            console.log(manager);
+        },
+        function error(error){
+            console.log("error");
+        }
+    );
+    //console.log(typeof CouchbaseClient.initRESTClient);
+};
+
+CouchbaseOGM.testFunction2 = function(){
+    init2();
+};
+
+
+/**
  * Creates a new database with the specified name, must conform to Couchbase Naming Rules
  *
  * @param name
@@ -13,11 +55,13 @@ CouchbaseOGM.createDB = function(name){
     CouchbaseClient.initRESTClient(manager => {
         manager.database.put_db({db: database_name}).then(
             success = (response) => {
-                console.error(response);
+                console.info(response);
+                return true;
+                //console.error(response);
             },
             error = (response) => {
                 //console.log(response);
-                console.log(response.statusText);
+                console.error(response.statusText);
             }
         )
     })
@@ -31,11 +75,12 @@ CouchbaseOGM.createDB = function(name){
  */
 CouchbaseOGM.getAllDocuments = function(name){
     let database_name = name;
-
     CouchbaseClient.initRESTClient(manager => {
         manager.query.get_db_all_docs({db: database_name}).then(
-            function success(something){
-                console.log(something);
+            function success(result){
+                console.log(result);
+                //console.log(JSON.parse(result.data));
+                return JSON.parse(result.data);
             },
             function error(something){
                 console.error(something);
@@ -44,27 +89,7 @@ CouchbaseOGM.getAllDocuments = function(name){
     })
 };
 
-/*
-CouchbaseOGM.init = function () {
-    //console.log("khe pasion amigos");
-    //console.log(CouchbaseClient);
-    CouchbaseClient.initRESTClient(manager => {
-        // use manager to perform operations
-        //manager.help();
-        //manager.database.put_db.help();
-        manager.database.put_db({db: "Test"});
-        //console.log(manager.database.get_db({db: "Test"}));
 
-        manager.database.get_db({db: "Test"}).then(
-            function success(something){
-                console.log(something);
-            },
-            function error(something){
-                console.error(something);
-            }
-        )
-    });
-};
-*/
+
 
 module.exports = CouchbaseOGM;
