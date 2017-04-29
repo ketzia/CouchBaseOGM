@@ -24,7 +24,6 @@ function initManager(){
  * Creates a new database with the specified name, must conform to Couchbase Naming Rules
  * Awaits for the manager to be started and then returns a promise with the given result or error in resolve and reject.
  * @param database_name
- * @returns {Promise}
  */
 CouchbaseOGM.createDB = async function(database_name){
     let manager = await initManager();
