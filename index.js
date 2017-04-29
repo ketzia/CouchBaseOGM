@@ -28,19 +28,14 @@ function initManager(){
  */
 CouchbaseOGM.createDB = async function(database_name){
     let manager = await initManager();
-    return new Promise((resolve,reject) => {
-        manager.database.put_db({db: database_name}).then(
-            function success(response){
-                console.log("Success creating database: " + database_name);
-                resolve(response);
-            },
-            function error(response){
-                console.log("Error creating database: " + database_name);
-                reject(response);
-                return;
-            }
-        )
-    })
+    manager.database.put_db({db: database_name}).then(
+        function success(){
+            console.log("Success creating database: " + database_name);
+        },
+        function error(){
+            console.log("Error creating database: " + database_name);
+        }
+    )
 };
 
 /**
