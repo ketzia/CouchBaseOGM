@@ -1,6 +1,6 @@
 {
   "name": "couchbase-ogm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This is an OGM driver for the couchabse database lite and react-native",
   "main": "index.js",
   "repository": "https://github.com/ketzia/CouchBaseOGM.git",
