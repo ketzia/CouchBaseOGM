@@ -38,7 +38,6 @@ CouchbaseOGM.createDB = async function(database_name){
 
 CouchbaseOGM.deleteDb = async function(database_name){
     let manager = await initManager();
-    manager.database.delete_db.help();
     manager.database.delete_db({db : database_name}).then(
         function success(){
             console.log("Success deleting database"+ database_name);
@@ -49,6 +48,11 @@ CouchbaseOGM.deleteDb = async function(database_name){
     )
 };
 
+
+CouchbaseOGM.printFn = async function(){
+    let manager = await initManager();
+    manager.attachment.put_db_doc_attachment.help();
+};
 
 
 /**
@@ -62,12 +66,12 @@ CouchbaseOGM.getDBDocuments = async function(database_name){
     return new Promise((resolve,reject) => {
         manager.query.get_db_all_docs({db: database_name}).then(
             function success(response){
-                console.log("Success querying documents for database: " + database_name);
+                //console.log("Success querying documents for database: " + database_name);
                 let result = JSON.parse(response.data);
                 resolve(result);
             },
             function error(response){
-                console.log("Error trying to query documents for database: " + database_name);
+                //console.log("Error trying to query documents for database: " + database_name);
                 reject(response);
                 return;
             }
@@ -95,20 +99,22 @@ CouchbaseOGM.getDBDocument = async function(doc_id,database_name){
 
 };
 
-CouchbaseOGM.createDocument = async function(doc_id, database_name , object){
+CouchbaseOGM.createDocument = async function(doc_id,database_name,object){
     let manager = await initManager();
-    manager.document.put.help();
-    manager.document.post({db: database_name, body: JSON.stringify(object)}).then(
+    //manager.document.put.help();
+    manager.document.put({doc : doc_id , db: database_name, body: JSON.stringify(object)}).then(
         function success(response){
-            //console.log("Success creating document for database: " + database_name);
+            console.log("Success creating document for database: " + database_name);
             //console.log("Success inserting docuemnt",response);
         },
         function error(response){
             //console.log("Error creating document for database: " + database_name);
-            //console.log("Error",response);
+            console.log("Error",response);
         }
     )
 };
+
+
 
 CouchbaseOGM.updateDocument = async function(doc_id,database_name,object,rev){
     let manager = await initManager();
@@ -122,6 +128,19 @@ CouchbaseOGM.updateDocument = async function(doc_id,database_name,object,rev){
             //console.log("Error creating document for database: " + database_name);
             //console.log("Error",response);
         }
+    )
+};
+
+CouchbaseOGM.deleteDocument = async function(doc_id,database_name,rev_id){
+  let manager = await initManager();
+  manager.document.delete({doc: doc_id, db: database_name,rev:rev_id}).then(
+      function success(response){
+          console.log("si bogge");
+      },
+      function error(response) {
+          //console.log("no bogge");
+          console.log(response);
+      }
     )
 };
 
