@@ -102,16 +102,21 @@ CouchbaseOGM.getDBDocument = async function(doc_id,database_name){
 CouchbaseOGM.createDocument = async function(doc_id,database_name,object){
     let manager = await initManager();
     //manager.document.put.help();
-    manager.document.put({doc : doc_id , db: database_name, body: JSON.stringify(object)}).then(
-        function success(response){
-            console.log("Success creating document for database: " + database_name);
-            //console.log("Success inserting docuemnt",response);
-        },
-        function error(response){
-            //console.log("Error creating document for database: " + database_name);
-            console.log("Error",response);
-        }
-    )
+    return new Promise((resolve,reject) => {
+        manager.document.put({doc : doc_id , db: database_name, body: JSON.stringify(object)}).then(
+            function success(response){
+                //console.log("Success creating document for database: " + database_name);
+                //console.log("Success inserting docuemnt",response);
+                resolve(response);
+            },
+            function error(response){
+                //console.log("Error creating document for database: " + database_name);
+                //console.log("Error",response);
+                reject(response);
+                return;
+            }
+        )
+    })
 };
 
 

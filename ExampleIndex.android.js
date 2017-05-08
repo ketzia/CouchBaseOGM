@@ -13,7 +13,8 @@ import {
     NativeModules,
     TextInput,
     Button,
-    Alert
+    Alert,
+    FlatList
 } from 'react-native';
 
 import Couchbase from "couchbase-ogm";
@@ -58,36 +59,71 @@ import Couchbase from "couchbase-ogm";
 //Couchbase.printFn();
 
 export default class TestProjectArquitectura extends Component {
+
+    /*
+     Esto tambien se puede usar
+     {this.state.entries.map(function(algo){
+     return <Text>{algo.id};</Text>
+     })}
+     */
+
     constructor(props){
         super(props);
         this.state = {
             id: 'Input Document ID',
             name: 'Input Document name field',
-            value: 'Input Document value field'
+            value: 'Input Document value field',
+            entries: []
         }
+        //console.log(this.state);
+        this.getEntries();
+
+
+    }
+
+    getEntries(){
+        let self = this;
+        Couchbase.getDBDocuments("test").then(
+            function success(response){
+                self.setState({entries: response.rows});
+                console.log(response.rows);
+            },
+            function error(response){
+                console.log("Error querying for objects :/ ");
+            }
+        )
     }
 
     saveData(){
         let id = this.state.id;
         let name = this.state.name;
         let value = this.state.value;
+        let self = this;
 
-        if(id === 'Input Document ID' || name === 'Input Document name field' || value === 'Input Document value field'){
-            console.log("Error");
-            Alert.alert(
-                'Alert Title',
-                'Input valid values',
-                [
-                    {text: 'OK', onPress: () => console.log('OK Pressed!')},
-                ]
-            )
-        }else{
-            console.log("No error");
-        }
+        Couchbase.createDocument(id,"test",{value:value}).then(
+            function success(){
+                self.getEntries();
+            },
+            function error(){
+
+            }
+        )
+
+    }
+
+    clearData(){
+        Couchbase.deleteDb("test");
+        this.setState({entries:[]});
+    }
+
+    createDB(){
+        Couchbase.createDB("test");
+        this.setState({entries:[]});
     }
 
     render() {
         return (
+
             <View style={styles.container}>
                 <Text style={styles.welcome}>
                     Welcome to Couchbase OGM Test!
@@ -113,15 +149,46 @@ export default class TestProjectArquitectura extends Component {
                     editable= {true}
                     onChangeText={(text) => this.setState({value: text})}
                 />
-                <Text>
-                    {"\n"}
-                </Text>
+
+                <Text>{"\n"}</Text>
                 <Button
                     onPress={this.saveData.bind(this)}
                     title="Save to DB"
                     color="#841584"
                     accessibilityLabel="Learn more about purple"
                 />
+                <Text>{"\n"}</Text>
+
+                <View style={{flexDirection: 'row'}}>
+                    <Button
+                        onPress={this.clearData.bind(this)}
+                        title="Clear DB"
+                        color="#e74c3c"
+                        accessibilityLabel="Learn more about purple"
+                    />
+                    <Text>  </Text>
+                    <Button
+                        onPress={this.createDB.bind(this)}
+                        title="Create DB"
+                        color="#27ae60"
+                        accessibilityLabel="Learn more about purple"
+                    />
+                </View>
+
+                <Text>
+                    {"\n"}
+                </Text>
+
+                <FlatList
+                    data={this.state.entries}
+                    renderItem={({item}) => <Text>{item.key}</Text>}
+                />
+
+
+
+
+
+
             </View>
         );
     }
